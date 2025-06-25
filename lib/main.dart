@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:state_smanagement/class/counter_state.dart';
+import 'package:state_smanagement/controllers/state_oberseble.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,10 +15,12 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   CounterState counterState = CounterState();
+  StateOberseble observableState = StateOberseble(0);
 
   @override
   void initState() {
     counterState.addListener(callback);
+    observableState.addListener(callback);
     super.initState();
   }
 
@@ -25,6 +28,7 @@ class _MyAppState extends State<MyApp> {
   void dispose() {
     super.dispose();
     counterState.removeListener(callback);
+    observableState.removeListener(callback);
   }
 
   void callback() {
@@ -43,6 +47,13 @@ class _MyAppState extends State<MyApp> {
               ElevatedButton(
                 onPressed: () {
                   counterState.counter();
+                },
+                child: Text('+1'),
+              ),
+              Text('Contador: ${observableState.state}'),
+              ElevatedButton(
+                onPressed: () {
+                  observableState.state++;
                 },
                 child: Text('+1'),
               ),
