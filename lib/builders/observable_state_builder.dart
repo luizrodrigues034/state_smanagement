@@ -4,13 +4,18 @@ import 'package:state_smanagement/controllers/state_oberseble.dart';
 
 class ObservableStateBuilder<T> extends StatefulWidget {
   final StateOberseble<T> stateOberseble;
-  final Widget child;
+  final Widget? child;
+  final bool Function(T newState, T oldState)? buildWhen;
   final Widget Function(BuildContext context, T state, Widget child) build;
+  final void Function(BuildContext context, T state)? listener;
+
   const ObservableStateBuilder({
     super.key,
     required this.stateOberseble,
     required this.build,
-    required this.child,
+    this.child,
+    this.buildWhen,
+    this.listener,
   });
 
   @override
@@ -28,8 +33,21 @@ class _ObservableStateBuilderState<T> extends State<ObservableStateBuilder<T>> {
   }
 
   void callback() {
+    if (shouldRebuild()) {
+      state = widget.stateOberseble.state;
+      if (widget.listener != null) {
+        widget.listener!(context, state);
+      }
+      setState(() {});
+    }
     state = widget.stateOberseble.state;
-    setState(() {});
+  }
+
+  bool shouldRebuild() {
+    if (widget.buildWhen != null) {
+      return widget.buildWhen!(state, widget.stateOberseble.state);
+    }
+    return false;
   }
 
   @override
@@ -40,6 +58,6 @@ class _ObservableStateBuilderState<T> extends State<ObservableStateBuilder<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.build(context, state, widget.child);
+    return widget.build(context, state, widget.child!);
   }
 }

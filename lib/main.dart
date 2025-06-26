@@ -29,6 +29,17 @@ class _MyAppState extends State<MyApp> {
             children: [
               ObservableStateBuilder(
                 stateOberseble: observableState,
+                listener: (context, state) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('O numero eh par'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                },
+                buildWhen: (newState, oldState) {
+                  return newState != oldState;
+                },
                 build: (context, state, chield) {
                   return Column(
                     children: [Text('valor do counterState: $state'), chield],
