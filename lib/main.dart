@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:state_smanagement/builders/observeble_builder.dart';
 import 'package:state_smanagement/class/counter_state.dart';
+import 'package:state_smanagement/controllers/change_state.dart';
 import 'package:state_smanagement/controllers/state_oberseble.dart';
 
 void main() {
@@ -56,6 +58,22 @@ class _MyAppState extends State<MyApp> {
                   observableState.state++;
                 },
                 child: Text('+1'),
+              ),
+              ObservebleBuilder(
+                observeble: counterState,
+                contexto: (context) {
+                  return Column(
+                    children: [
+                      Text('Contador: ${counterState.count}'),
+                      ElevatedButton(
+                        onPressed: () {
+                          counterState.counter();
+                        },
+                        child: Text('+1'),
+                      ),
+                    ],
+                  );
+                },
               ),
             ],
           ),
