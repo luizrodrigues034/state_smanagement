@@ -4,6 +4,7 @@ import 'package:state_smanagement/builders/observeble_builder.dart';
 import 'package:state_smanagement/class/counter_state.dart';
 import 'package:state_smanagement/controllers/change_state.dart';
 import 'package:state_smanagement/controllers/state_oberseble.dart';
+import 'package:state_smanagement/mixins/change_state_mixin.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,8 +17,17 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with ChangeStateMixin {
   StateOberseble observableState = StateOberseble(0);
+  CounterState counterState = CounterState();
+
+  @override
+  void initState() {
+    useChangeState(counterState);
+    useChangeState(observableState);
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,30 +37,19 @@ class _MyAppState extends State<MyApp> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ObservableStateBuilder(
-                stateOberseble: observableState,
-                listener: (context, state) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('O numero eh par'),
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
+              Text('valor do counterState: ${counterState.count}'),
+              ElevatedButton(
+                onPressed: () {
+                  counterState.counter();
                 },
-                buildWhen: (newState, oldState) {
-                  return newState != oldState;
+                child: Text('add +1'),
+              ),
+              Text('valor do observableState: ${observableState.state}'),
+              ElevatedButton(
+                onPressed: () {
+                  observableState.state++;
                 },
-                build: (context, state, chield) {
-                  return Column(
-                    children: [Text('valor do counterState: $state'), chield],
-                  );
-                },
-                child: ElevatedButton(
-                  onPressed: () {
-                    observableState.state++;
-                  },
-                  child: Text('add 1'),
-                ),
+                child: Text('add +1'),
               ),
             ],
           ),
